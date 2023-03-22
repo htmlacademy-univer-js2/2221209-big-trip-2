@@ -1,6 +1,6 @@
 import {createElement} from '../render.js';
 
-const createElemListTemplate = () => 
+const createElemListTemplate = () =>
   `
 <ul class="trip-events__list">
 

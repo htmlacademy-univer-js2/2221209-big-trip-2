@@ -1,3 +1,3 @@
-import {init} from './draw-elems.js'
+import {init} from './draw-elems.js';
 
 init();

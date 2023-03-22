@@ -9,30 +9,30 @@ import {NewEventEditorView} from './view/edit-event-view.js';
 import {render} from './render.js';
 
 const init = () => {
-    const headerTrip = document.querySelector('.trip-main');
-    const siteMenuElement = headerTrip.querySelector('.trip-controls__navigation');
+  const headerTrip = document.querySelector('.trip-main');
+  const siteMenuElement = headerTrip.querySelector('.trip-controls__navigation');
 
-    const siteFilterElement = headerTrip.querySelector('.trip-controls__filters');
+  const siteFilterElement = headerTrip.querySelector('.trip-controls__filters');
 
-    const mainEvents = document.querySelector('.trip-events');
-    
-    render(new NewInfoView(), headerTrip, 'afterbegin')
-    render(new NewNavView(), siteMenuElement);
-    render(new NewFilterView(), siteFilterElement);
-    render(new NewSortView(), mainEvents);
+  const mainEvents = document.querySelector('.trip-events');
 
-    render(new NewElemListView(), mainEvents);
+  render(new NewInfoView(), headerTrip, 'afterbegin');
+  render(new NewNavView(), siteMenuElement);
+  render(new NewFilterView(), siteFilterElement);
+  render(new NewSortView(), mainEvents);
 
-    const eventsList = mainEvents.getElementsByClassName('trip-events__list');
+  render(new NewElemListView(), mainEvents);
 
-    [1, 2, 3].forEach(() => {
-        render(new NewEventView(), eventsList[0]);
-    });
+  const eventsList = mainEvents.getElementsByClassName('trip-events__list');
 
-    const events = mainEvents.getElementsByClassName('trip-events__item');
+  [1, 2, 3].forEach(() => {
+    render(new NewEventView(), eventsList[0]);
+  });
 
-    render(new NewEventCreatorView(), eventsList[0], 'afterbegin');
-    render(new NewEventEditorView(), events[1], 'afterend');
+  const events = mainEvents.getElementsByClassName('trip-events__item');
+
+  render(new NewEventCreatorView(), eventsList[0], 'afterbegin');
+  render(new NewEventEditorView(), events[1], 'afterend');
 };
 
 export {init};
