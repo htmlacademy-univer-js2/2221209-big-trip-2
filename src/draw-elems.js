@@ -4,9 +4,11 @@ import {NewInfoView} from './view/info-view.js';
 import {NewSortView} from './view/sort-view.js';
 import {NewEventView} from './view/event-view.js';
 import {NewElemListView} from './view/events-list-view.js';
-import {NewEventCreatorView} from './view/create-event-view.js';
+//import {NewEventCreatorView} from './view/create-event-view.js';
 import {NewEventEditorView} from './view/edit-event-view.js';
-import {render} from './render.js';
+import {render, RenderPosition} from './render.js';
+import {PointModel} from './model/point-model.js';
+import { getDefaultPoint } from './util.js';
 
 const init = () => {
   const headerTrip = document.querySelector('.trip-main');
@@ -16,7 +18,12 @@ const init = () => {
 
   const mainEvents = document.querySelector('.trip-events');
 
-  render(new NewInfoView(), headerTrip, 'afterbegin');
+  const pointModel = new PointModel();
+  const points = pointModel.getPoints();
+  const destinations = pointModel.getDestinations();
+  const offersByType = pointModel.getOffersByType();
+
+  render(new NewInfoView(), headerTrip, RenderPosition.AFTERBEGIN);
   render(new NewNavView(), siteMenuElement);
   render(new NewFilterView(), siteFilterElement);
   render(new NewSortView(), mainEvents);
@@ -25,14 +32,14 @@ const init = () => {
 
   const eventsList = mainEvents.getElementsByClassName('trip-events__list');
 
-  [1, 2, 3].forEach(() => {
-    render(new NewEventView(), eventsList[0]);
+  points.forEach((point) => {
+    render(new NewEventView(point, destinations, offersByType), eventsList[0]);
   });
 
   const events = mainEvents.getElementsByClassName('trip-events__item');
 
-  render(new NewEventCreatorView(), eventsList[0], 'afterbegin');
-  render(new NewEventEditorView(), events[1], 'afterend');
+  render(new NewEventEditorView(getDefaultPoint(), destinations, offersByType), eventsList[0], RenderPosition.AFTERBEGIN);
+  render(new NewEventEditorView(points[0], destinations, offersByType), events[1], RenderPosition.AFTEREND);
 };
 
 export {init};
