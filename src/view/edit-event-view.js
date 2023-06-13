@@ -110,26 +110,31 @@ const createEventEditorTemplate = (point, destinations, offersByType) => {
 `);};
 
 class NewEventEditorView {
+  #element = null;
+  #point = null;
+  #destinations = [];
+  #offers = [];
+
   constructor(point, destinations, offersByType) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offersByType = offersByType;
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offersByType;
   }
 
-  getTemplate() {
-    return createEventEditorTemplate(this.point, this.destinations, this.offersByType);
+  get template() {
+    return createEventEditorTemplate(this.#point, this.#destinations, this.#offers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
 

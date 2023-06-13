@@ -4,42 +4,81 @@ import {NewInfoView} from './view/info-view.js';
 import {NewSortView} from './view/sort-view.js';
 import {NewEventView} from './view/event-view.js';
 import {NewElemListView} from './view/events-list-view.js';
-//import {NewEventCreatorView} from './view/create-event-view.js';
 import {NewEventEditorView} from './view/edit-event-view.js';
 import {render, RenderPosition} from './render.js';
-import {PointModel} from './model/point-model.js';
-import { getDefaultPoint } from './util.js';
 
-const init = () => {
-  const headerTrip = document.querySelector('.trip-main');
-  const siteMenuElement = headerTrip.querySelector('.trip-controls__navigation');
+class ElemsDrawer {
+  #headerContainer = null;
+  #pointModel = null;
+  #mainContainer = null
+  #controlsContainer = null
+  #eventsList = null
 
-  const siteFilterElement = headerTrip.querySelector('.trip-controls__filters');
+  constructor(headerCon, controlsCon, mainCon, pointModel) {
+    this.#controlsContainer = controlsCon;
+    this.#headerContainer = headerCon;
+    this.#pointModel= pointModel;
+    this.#mainContainer = mainCon;
+    this.#eventsList = new NewElemListView();
+  }
 
-  const mainEvents = document.querySelector('.trip-events');
+  init(){
+    const points = this.#pointModel.points;
+    const destinations = this.#pointModel.destinations;
+    const offersByType = this.#pointModel.offersByType;
 
-  const pointModel = new PointModel();
-  const points = pointModel.getPoints();
-  const destinations = pointModel.getDestinations();
-  const offersByType = pointModel.getOffersByType();
+    render(new NewInfoView(), this.#headerContainer, RenderPosition.AFTERBEGIN);
+    render(new NewNavView(), this.#controlsContainer);
+    render(new NewFilterView(), this.#controlsContainer);
+    render(new NewSortView(), this.#mainContainer);
 
-  render(new NewInfoView(), headerTrip, RenderPosition.AFTERBEGIN);
-  render(new NewNavView(), siteMenuElement);
-  render(new NewFilterView(), siteFilterElement);
-  render(new NewSortView(), mainEvents);
+    render(this.#eventsList, this.#mainContainer);
 
-  render(new NewElemListView(), mainEvents);
+    for (const point of points){
+      this.#renderPoint(point, destinations, offersByType);
+    }
+  }
 
-  const eventsList = mainEvents.getElementsByClassName('trip-events__list');
+  #renderPoint = (point, destinations, offers) => {
+    const pointComponent = new NewEventView(point, destinations, offers);
+    const pointEditComponent = new NewEventEditorView(point, destinations, offers);
 
-  points.forEach((point) => {
-    render(new NewEventView(point, destinations, offersByType), eventsList[0]);
-  });
+    const turnPointToEdit = () => {
+      this.#eventsList.element.replaceChild(pointEditComponent.element, pointComponent.element);
+    };
+    const turnPointToView = () => {
+      this.#eventsList.element.replaceChild(pointComponent.element, pointEditComponent.element);
+    };
 
-  const events = mainEvents.getElementsByClassName('trip-events__item');
+    const onEscKey = (evt) => {
+      if (evt.key === 'Escape'){
+        turnPointToView();
+        document.removeEventListener('keyup', onEscKey);
+      }
+    };
 
-  render(new NewEventEditorView(getDefaultPoint(), destinations, offersByType), eventsList[0], RenderPosition.AFTERBEGIN);
-  render(new NewEventEditorView(points[0], destinations, offersByType), events[1], RenderPosition.AFTEREND);
-};
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      turnPointToEdit();
+      document.addEventListener('keyup', onEscKey);
+    });
 
-export {init};
+    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      turnPointToView();
+      document.removeEventListener('keyup', onEscKey);
+    });
+
+    pointEditComponent.element.querySelector('.event--edit').addEventListener('submit', () => {
+      turnPointToView();
+      document.removeEventListener('keyup', onEscKey);
+    });
+
+    pointEditComponent.element.querySelector('.event--edit').addEventListener('reset', () => {
+      turnPointToView();
+      document.removeEventListener('keyup', onEscKey);
+    });
+
+    render(pointComponent, this.#eventsList.element);
+  };
+}
+
+export {ElemsDrawer};
