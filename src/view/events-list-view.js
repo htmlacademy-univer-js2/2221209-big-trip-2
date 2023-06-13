@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createElemListTemplate = () =>
   `
@@ -6,23 +6,9 @@ const createElemListTemplate = () =>
 
 </ul>`;
 
-class NewElemListView {
-  #element = null;
-
+class NewElemListView extends AbstractView{
   get template() {
     return createElemListTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
 

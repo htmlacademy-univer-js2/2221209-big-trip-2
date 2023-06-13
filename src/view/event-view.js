@@ -1,6 +1,6 @@
-import { createElement } from '../render.js';
 import {changeDateFormat, getDuration} from '../util.js';
 import {DateFormat} from '../const.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createEventsTemplate = (point, destinations, offersByType) => {
   const pointDestanation = destinations.find((dest) => dest.id === point.destination);
@@ -54,13 +54,13 @@ const createEventsTemplate = (point, destinations, offersByType) => {
 </li>`);
 };
 
-class NewEventView {
-  #element = null;
+class NewEventView extends AbstractView{
   #point = null;
   #destinations = [];
   #offers = [];
 
   constructor(point, destinations, offersByType) {
+    super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offersByType;
@@ -70,17 +70,15 @@ class NewEventView {
     return createEventsTemplate(this.#point, this.#destinations, this.#offers);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
+  setRollupButtonClickHandler = (callback) => {
+    this._callback.rollupButtonClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupButtonClickHandler);
   }
 
-  removeElement() {
-    this.#element = null;
+  #rollupButtonClickHandler = () => {
+    this._callback.rollupButtonClick();
   }
+
 }
 
 export { NewEventView };

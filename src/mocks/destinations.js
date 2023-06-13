@@ -5,7 +5,7 @@ const destinations = [
     'name': 'Jerusalem',
     'pictures': [
       {
-        'src': 'http://picsum.photos/300/200?r=0.0762564007163317',
+        'src': 'https://loremflickr.com/248/152?random=0.0762453005163317',
         'description': 'Cras aliquet varius magna, non porta ligula feugiat eget.'
       }
     ]
@@ -16,11 +16,11 @@ const destinations = [
     'name': 'Tokio',
     'pictures': [
       {
-        'src': 'http://picsum.photos/300/200?r=0.0762363005163317',
+        'src': 'https://loremflickr.com/248/152?random=0.0762463002163317',
         'description': ' Aliquam id orci ut lectus varius viverra.'
       },
       {
-        'src': 'http://picsum.photos/300/200?r=0.0762363005163217',
+        'src': 'https://loremflickr.com/248/152?random=0.0762463905163317',
         'description': ' Aliquam erat volutpat'
       }
     ]
@@ -31,7 +31,7 @@ const destinations = [
     'name': 'Chamonix',
     'pictures': [
       {
-        'src': 'http://picsum.photos/300/200?r=0.0762563005163317',
+        'src': 'https://loremflickr.com/248/152?random=0.0762463005153317',
         'description': 'Chamonix parliament building'
       }
     ]

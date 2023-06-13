@@ -1,6 +1,6 @@
-import {createElement} from '../render.js';
 import {POINT_TYPES, DateFormat} from '../const.js';
 import {changeDateFormat} from '../util.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
 const formatOfferTitle = (title) => title.split(' ').join('_');
@@ -109,13 +109,13 @@ const createEventEditorTemplate = (point, destinations, offersByType) => {
   </li>
 `);};
 
-class NewEventEditorView {
-  #element = null;
+class NewEventEditorView extends AbstractView{
   #point = null;
   #destinations = [];
   #offers = [];
 
   constructor(point, destinations, offersByType) {
+    super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offersByType;
@@ -125,16 +125,36 @@ class NewEventEditorView {
     return createEventEditorTemplate(this.#point, this.#destinations, this.#offers);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
+  setRollupButtonClickHandler = (callback) => {
+    const rollupBtn = this.element.querySelector('.event__rollup-btn');
+    if (rollupBtn){
+      this._callback.rollupButtonClick = callback;
+      rollupBtn.addEventListener('click', this.#rollupButtonClickHandler);
     }
-
-    return this.#element;
   }
 
-  removeElement() {
-    this.#element = null;
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
+  }
+
+  setFormResetHandler = (callback) => {
+    this._callback.formReset = callback;
+    this.element.querySelector('.event--edit').addEventListener('reset', this.#formResetHandler);
+  }
+
+  #formResetHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formReset();
+  }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  #rollupButtonClickHandler = () => {
+    this._callback.rollupButtonClick();
   }
 }
 
