@@ -73,11 +73,11 @@ class NewEventView extends AbstractView{
   setRollupButtonClickHandler = (callback) => {
     this._callback.rollupButtonClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupButtonClickHandler);
-  }
+  };
 
   #rollupButtonClickHandler = () => {
     this._callback.rollupButtonClick();
-  }
+  };
 
 }
 
