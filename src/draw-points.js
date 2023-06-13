@@ -1,23 +1,16 @@
-import {NewFilterView} from './view/filter-view.js';
-import {NewNavView} from './view/nav-view.js';
-import {NewInfoView} from './view/info-view.js';
 import {NewSortView} from './view/sort-view.js';
 import {NewEventView} from './view/event-view.js';
 import {NewElemListView} from './view/events-list-view.js';
 import {NewEventEditorView} from './view/edit-event-view.js';
 import {NewEmptyListView} from './view/empty-list-view.js';
-import {render, RenderPosition} from './render.js';
+import { replace, render} from './framework/render.js';
 
-class ElemsDrawer {
-  #headerContainer = null;
+class PointsDrawer {
   #pointModel = null;
-  #mainContainer = null
-  #controlsContainer = null
-  #eventsList = null
+  #mainContainer = null;
+  #eventsList = null;
 
-  constructor(headerCon, controlsCon, mainCon, pointModel) {
-    this.#controlsContainer = controlsCon;
-    this.#headerContainer = headerCon;
+  constructor(mainCon, pointModel) {
     this.#pointModel= pointModel;
     this.#mainContainer = mainCon;
     this.#eventsList = new NewElemListView();
@@ -27,10 +20,6 @@ class ElemsDrawer {
     const points = this.#pointModel.points;
     const destinations = this.#pointModel.destinations;
     const offersByType = this.#pointModel.offersByType;
-
-    render(new NewInfoView(), this.#headerContainer, RenderPosition.AFTERBEGIN);
-    render(new NewNavView(), this.#controlsContainer);
-    render(new NewFilterView(), this.#controlsContainer);
 
     if (points.length === 0) {
       render(new NewEmptyListView(), this.#mainContainer);
@@ -50,10 +39,10 @@ class ElemsDrawer {
     const pointEditComponent = new NewEventEditorView(point, destinations, offers);
 
     const turnPointToEdit = () => {
-      this.#eventsList.element.replaceChild(pointEditComponent.element, pointComponent.element);
+      replace(pointEditComponent, pointComponent);
     };
     const turnPointToView = () => {
-      this.#eventsList.element.replaceChild(pointComponent.element, pointEditComponent.element);
+      replace(pointComponent, pointEditComponent);
     };
 
     const onEscKey = (evt) => {
@@ -87,4 +76,4 @@ class ElemsDrawer {
   };
 }
 
-export {ElemsDrawer};
+export {PointsDrawer};
