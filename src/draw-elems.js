@@ -63,22 +63,22 @@ class ElemsDrawer {
       }
     };
 
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.setRollupButtonClickHandler(() => {
       turnPointToEdit();
       document.addEventListener('keyup', onEscKey);
     });
 
-    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointEditComponent.setRollupButtonClickHandler(() => {
       turnPointToView();
       document.removeEventListener('keyup', onEscKey);
     });
 
-    pointEditComponent.element.querySelector('.event--edit').addEventListener('submit', () => {
+    pointEditComponent.setFormSubmitHandler(() => {
       turnPointToView();
       document.removeEventListener('keyup', onEscKey);
     });
 
-    pointEditComponent.element.querySelector('.event--edit').addEventListener('reset', () => {
+    pointEditComponent.setFormResetHandler(() =>{
       turnPointToView();
       document.removeEventListener('keyup', onEscKey);
     });
