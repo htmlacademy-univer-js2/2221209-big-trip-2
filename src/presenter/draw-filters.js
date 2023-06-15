@@ -1,5 +1,5 @@
-import { render } from './framework/render.js';
-import { NewFilterView } from './view/filter-view';
+import { render } from '../framework/render.js';
+import { NewFilterView } from '../view/filter-view.js';
 
 class FiltersDrawer {
   #container = null;
