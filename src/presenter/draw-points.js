@@ -1,9 +1,7 @@
 import {NewSortView} from '../view/sort-view.js';
-import {NewEventView} from '../view/event-view.js';
 import {NewElemListView} from '../view/events-list-view.js';
-import {NewEventEditorView} from '../view/edit-event-view.js';
 import {NewEmptyListView} from '../view/empty-list-view.js';
-import { replace, render} from '../framework/render.js';
+import { render} from '../framework/render.js';
 import { PointDrawer } from './draw-point.js';
 import { updateItems } from '../util.js';
 

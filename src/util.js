@@ -27,7 +27,7 @@ const getDefaultPoint = () => ({
 });
 
 const updateItems = (items, updatedItem) => {
-  const newItems =  items.map((item) => item.id === updatedItem.id ? updatedItem : item);
+  const newItems = items.map((item) => item.id === updatedItem.id ? updatedItem : item);
   return newItems;
 };
 
