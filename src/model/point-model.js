@@ -3,9 +3,9 @@ import {destinations} from '../mocks/destinations.js';
 import {offersByType} from '../mocks/offers.js';
 
 class PointModel {
-  #points = null
-  #destinations = null
-  #offersByType = null
+  #points = [];
+  #destinations = [];
+  #offersByType = [];
 
   constructor() {
     this.#points = points;

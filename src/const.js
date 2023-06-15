@@ -6,5 +6,9 @@ const DateFormat = {
   SERVICE: 'YYYY-MM-DDThh:mm',
   SERVICE_DAY: 'YYYY-MM-DD'
 };
+const PointState = {
+  VIEW: 'view',
+  EDIT: 'edit'
+};
 
-export {POINT_TYPES, DateFormat};
+export {POINT_TYPES, DateFormat, PointState};

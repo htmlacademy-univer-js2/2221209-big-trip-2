@@ -79,6 +79,15 @@ class NewEventView extends AbstractView{
     this._callback.rollupButtonClick();
   };
 
+  setFavButtonClickHandler = (callback) => {
+    this._callback.favButtonClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favButtonClickHandler);
+  };
+
+  #favButtonClickHandler = () => {
+    this._callback.favButtonClick();
+  };
+
 }
 
 export { NewEventView };

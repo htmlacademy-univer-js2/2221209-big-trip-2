@@ -26,4 +26,9 @@ const getDefaultPoint = () => ({
   'type': POINT_TYPES[0]
 });
 
-export {changeDateFormat, getDuration, getDefaultPoint};
+const updateItems = (items, updatedItem) => {
+  const newItems =  items.map((item) => item.id === updatedItem.id ? updatedItem : item);
+  return newItems;
+};
+
+export {changeDateFormat, getDuration, getDefaultPoint, updateItems};

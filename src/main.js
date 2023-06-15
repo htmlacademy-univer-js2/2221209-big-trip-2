@@ -1,5 +1,5 @@
-import { FiltersDrawer } from './draw-filters.js';
-import {PointsDrawer} from './draw-points.js';
+import { FiltersDrawer } from './presenter/draw-filters.js';
+import {PointsDrawer} from './presenter/draw-points.js';
 import { PointModel } from './model/point-model.js';
 import { RenderPosition, render } from './framework/render.js';
 import { NewInfoView } from './view/info-view.js';

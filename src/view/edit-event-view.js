@@ -131,31 +131,31 @@ class NewEventEditorView extends AbstractView{
       this._callback.rollupButtonClick = callback;
       rollupBtn.addEventListener('click', this.#rollupButtonClickHandler);
     }
-  }
+  };
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
-  }
+  };
 
   setFormResetHandler = (callback) => {
     this._callback.formReset = callback;
     this.element.querySelector('.event--edit').addEventListener('reset', this.#formResetHandler);
-  }
+  };
 
   #formResetHandler = (evt) => {
     evt.preventDefault();
     this._callback.formReset();
-  }
+  };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit();
-  }
+  };
 
   #rollupButtonClickHandler = () => {
     this._callback.rollupButtonClick();
-  }
+  };
 }
 
 export {NewEventEditorView};
