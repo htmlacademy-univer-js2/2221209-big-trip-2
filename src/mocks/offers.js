@@ -69,6 +69,18 @@ const offersByType = [
   },
   {'type': 'ship',
     'offers': []
+  },
+  {'type': 'train',
+    'offers': []
+  },
+  {'type': 'check-in',
+    'offers': []
+  },
+  {'type': 'sightseeing',
+    'offers': []
+  },
+  {'type': 'restaurant',
+    'offers': []
   }
 ];
 

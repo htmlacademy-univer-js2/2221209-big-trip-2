@@ -38,4 +38,9 @@ const sortByTime = (firstPoint, secondPoint) => {
   return secondPointTime - firstPointTime;
 };
 
-export {changeDateFormat, getDuration, getDefaultPoint, updateItems, sortByDay, sortByPrice, sortByTime};
+const getOfferId = (markupId) => {
+  const assets = markupId.split('-');
+  return Number(assets[2]) || 0;
+};
+
+export {changeDateFormat, getDuration, getDefaultPoint, updateItems, sortByDay, sortByPrice, sortByTime, getOfferId};

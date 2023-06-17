@@ -10,6 +10,7 @@ class PointDrawer {
   #pointEditComponent = null;
   #pointState = PointState.VIEW;
   #pointsResetHandler = null;
+  #point = null;
 
   constructor(eventsListCon, onPointUpdate, pointsReset) {
     this.#eventsListContainer = eventsListCon;
@@ -21,8 +22,9 @@ class PointDrawer {
     const pervPointComponent = this.#pointComponent;
     const pervPointEditComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new NewEventView(point, destinations, offers);
-    this.#pointEditComponent = new NewEventEditorView(point, destinations, offers);
+    this.#point = point;
+    this.#pointComponent = new NewEventView(this.#point, destinations, offers);
+    this.#pointEditComponent = new NewEventEditorView(this.#point, destinations, offers);
 
     const onEscKey = (evt) => {
       if (evt.key === 'Escape'){
@@ -32,30 +34,32 @@ class PointDrawer {
     };
 
     this.#pointComponent.setRollupButtonClickHandler(() => {
-
       this.#turnPointToEdit();
       document.addEventListener('keyup', onEscKey);
     });
 
     this.#pointEditComponent.setRollupButtonClickHandler(() => {
+      this.#pointEditComponent.reset(this.#point);
       this.#turnPointToView();
       document.removeEventListener('keyup', onEscKey);
     });
 
-    this.#pointEditComponent.setFormSubmitHandler(() => {
+    this.#pointEditComponent.setFormSubmitHandler((updPoint) => {
+      this.#onPointUpdateHandler(updPoint);
       this.#turnPointToView();
       document.removeEventListener('keyup', onEscKey);
     });
 
     this.#pointEditComponent.setFormResetHandler(() =>{
+      this.#pointEditComponent.reset(this.#point);
       this.#turnPointToView();
       document.removeEventListener('keyup', onEscKey);
     });
 
     this.#pointComponent.setFavButtonClickHandler(() => {
       this.#onPointUpdateHandler({
-        ...point,
-        isFavorite: !point.isFavorite
+        ...this.#point,
+        isFavorite: !this.#point.isFavorite
       });
     });
 
@@ -88,6 +92,7 @@ class PointDrawer {
 
   resetPoint = () => {
     if (this.#pointState === PointState.EDIT){
+      this.#pointEditComponent.reset(this.#point);
       this.#turnPointToView();
     }
   };
