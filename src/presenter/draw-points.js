@@ -1,11 +1,10 @@
 import {NewSortView} from '../view/sort-view.js';
-import {NewEventView} from '../view/event-view.js';
 import {NewElemListView} from '../view/events-list-view.js';
-import {NewEventEditorView} from '../view/edit-event-view.js';
 import {NewEmptyListView} from '../view/empty-list-view.js';
-import { replace, render} from '../framework/render.js';
+import { RenderPosition, remove, render} from '../framework/render.js';
 import { PointDrawer } from './draw-point.js';
-import { updateItems } from '../util.js';
+import { sortByDay, sortByPrice, sortByTime, updateItems } from '../util.js';
+import { SortType } from '../const.js';
 
 class PointsDrawer {
   #pointModel = null;
@@ -15,11 +14,14 @@ class PointsDrawer {
   #destinations = [];
   #offersByType = [];
   #pointDrawers = new Map();
+  #eventsSort = null;
+  #sortType = SortType.DAY;
 
   constructor(mainCon, pointModel) {
     this.#pointModel= pointModel;
     this.#mainContainer = mainCon;
     this.#eventsList = new NewElemListView();
+    this.#eventsSort = new NewSortView();
   }
 
   init(){
@@ -27,18 +29,59 @@ class PointsDrawer {
     this.#destinations = this.#pointModel.destinations;
     this.#offersByType = this.#pointModel.offersByType;
 
+    this.#sortPoints(this.#sortType);
+    this.#renderPoints();
+
+    this.#renderSort();
+  }
+
+  #renderPoints = () => {
     if (this.#points.length === 0) {
       render(new NewEmptyListView(), this.#mainContainer);
       return;
     }
 
-    render(new NewSortView(), this.#mainContainer);
     render(this.#eventsList, this.#mainContainer);
-
     for (const point of this.#points){
       this.#renderPoint(point, this.#destinations, this.#offersByType);
     }
-  }
+  };
+
+  #renderSort = () => {
+    render(this.#eventsSort, this.#mainContainer, RenderPosition.AFTERBEGIN);
+    this.#eventsSort.setSortTypeChangeHandler(this.#changeTypeSortHandler);
+  };
+
+  #changeTypeSortHandler = (sortType) => {
+    if (this.#sortType === sortType) {
+      return;
+    }
+    this.#sortPoints(sortType);
+    this.#clearEventsList();
+    this.#renderPoints();
+  };
+
+  #sortPoints = (sortType) => {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#points.sort(sortByDay);
+        break;
+      case SortType.TIME:
+        this.#points.sort(sortByTime);
+        break;
+      case SortType.PRICE:
+        this.#points.sort(sortByPrice);
+        break;
+    }
+
+    this.#sortType = sortType;
+  };
+
+  #clearEventsList = () => {
+    this.#pointDrawers.forEach((drawer) =>drawer.removeDrawer);
+    this.#pointDrawers.clear();
+    remove(this.#eventsList);
+  };
 
   #renderPoint = (point, destinations, offers) => {
     const newPoint = new PointDrawer(this.#eventsList.element, this.#pointUpdateHandler, this.#pointsResetHandler);

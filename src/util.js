@@ -26,9 +26,16 @@ const getDefaultPoint = () => ({
   'type': POINT_TYPES[0]
 });
 
-const updateItems = (items, updatedItem) => {
-  const newItems =  items.map((item) => item.id === updatedItem.id ? updatedItem : item);
-  return newItems;
+const updateItems = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
+
+const sortByDay = (firstPoint, secondPoint) => dayjs(firstPoint.dateFrom).diff(dayjs(secondPoint.dateFrom));
+
+const sortByPrice = (firstPoint, secondPoint) => secondPoint.basePrice - firstPoint.basePrice;
+
+const sortByTime = (firstPoint, secondPoint) => {
+  const firstPointTime = dayjs(firstPoint.dateTo).diff(dayjs(firstPoint.dateFrom));
+  const secondPointTime = dayjs(secondPoint.dateTo).diff(dayjs(secondPoint.dateFrom));
+  return secondPointTime - firstPointTime;
 };
 
-export {changeDateFormat, getDuration, getDefaultPoint, updateItems};
+export {changeDateFormat, getDuration, getDefaultPoint, updateItems, sortByDay, sortByPrice, sortByTime};

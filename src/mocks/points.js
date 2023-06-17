@@ -1,7 +1,7 @@
 const points = [
   {
-    'basePrice': 1100,
-    'dateFrom': '2020-07-09T22:50:56.845Z',
+    'basePrice': 350,
+    'dateFrom': '2020-07-11T22:50:56.845Z',
     'dateTo': '2023-07-11T03:22:13.375Z',
     'destination': 1,
     'id': 1,

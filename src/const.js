@@ -10,5 +10,10 @@ const PointState = {
   VIEW: 'view',
   EDIT: 'edit'
 };
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
 
-export {POINT_TYPES, DateFormat, PointState};
+export {POINT_TYPES, DateFormat, PointState, SortType};
