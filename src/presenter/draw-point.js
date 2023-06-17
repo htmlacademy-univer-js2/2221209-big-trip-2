@@ -91,6 +91,11 @@ class PointDrawer {
       this.#turnPointToView();
     }
   };
+
+  removeDrawer = () => {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
+  };
 }
 
 export {PointDrawer};
