@@ -1,9 +1,8 @@
 import {POINT_TYPES, DateFormat} from '../const.js';
-import {changeDateFormat} from '../util.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import {changeDateFormat, getOfferId} from '../util.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
-const formatOfferTitle = (title) => title.split(' ').join('_');
 
 const createEventEditorTemplate = (point, destinations, offersByType) => {
   const pointDestanation = destinations.find((dest) => dest.id === point.destination);
@@ -78,9 +77,9 @@ const createEventEditorTemplate = (point, destinations, offersByType) => {
           <div class="event__available-offers">
           ${pointTypeOffers.map((typeOffer) =>
         `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${formatOfferTitle(typeOffer.title)}-${pointId}"
-                type="checkbox" name="event-offer-${formatOfferTitle(typeOffer.title)}" ${point.offers.includes(typeOffer.id) ? 'checked' : ''}>
-              <label class="event__offer-label" for="event-offer-${formatOfferTitle(typeOffer.title)}-${pointId}">
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${typeOffer.id}-${pointId}"
+                type="checkbox" name="event-offer-${typeOffer.id}" ${point.offers.includes(typeOffer.id) ? 'checked' : ''}>
+              <label class="event__offer-label" for="event-offer-${typeOffer.id}-${pointId}">
                 <span class="event__offer-title">${typeOffer.title}</span>
                 &plus;&euro;&nbsp;
                 <span class="event__offer-price">${typeOffer.price}</span>
@@ -109,7 +108,7 @@ const createEventEditorTemplate = (point, destinations, offersByType) => {
   </li>
 `);};
 
-class NewEventEditorView extends AbstractView{
+class NewEventEditorView extends AbstractStatefulView{
   #point = null;
   #destinations = [];
   #offers = [];
@@ -119,10 +118,12 @@ class NewEventEditorView extends AbstractView{
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offersByType;
+    this._setState(this.#point);
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createEventEditorTemplate(this.#point, this.#destinations, this.#offers);
+    return createEventEditorTemplate(this._state, this.#destinations, this.#offers);
   }
 
   setRollupButtonClickHandler = (callback) => {
@@ -150,11 +151,80 @@ class NewEventEditorView extends AbstractView{
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._state);
   };
+
+  #typeChangeHandler = (evt) => {
+    this.updateElement({
+      type: evt.target.value,
+      offers: []
+    });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    const newDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
+    this.updateElement({
+      destination: newDestination ? newDestination.id : this._state.destination
+    });
+  };
+
+  #priceChangeHandler = (evt) => {
+    const  inputedPrice = Number(evt.target.value);
+    const isValidPrice = !Number.isNaN(inputedPrice) && !evt.target.value.includes('e');
+    const newPrice = isValidPrice ? Math.round(inputedPrice) : this._state.basePrice;
+    this._setState({
+      basePrice: newPrice
+    });
+    evt.target.value = newPrice;
+  };
+
+  #offersChangeHandler = (evt) => {
+    const {id, checked} = evt.target;
+    const offerId = getOfferId(id);
+    const currentOffers = this._state.offers;
+    let newOffers = [];
+
+    if (checked) {
+      newOffers = [
+        ...currentOffers,
+        offerId
+      ];
+    }
+    else {
+      const offerIndex = currentOffers.findIndex((curId) => curId === offerId);
+      newOffers = [
+        ...currentOffers.slice(0, offerIndex),
+        ...currentOffers.slice(offerIndex + 1)
+      ];
+    }
+    this._setState({
+      offers: newOffers
+    });
+  };
+
+  #setInnerHandlers = () => {
+    const availableOffers = this.element.querySelector('.event__available-offers');
+    if (availableOffers) {
+      availableOffers.addEventListener('change', this.#offersChangeHandler);
+    }
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
+  };
+
+  _restoreHandlers() {
+    this.#setInnerHandlers();
+    this.setRollupButtonClickHandler(this._callback.rollupButtonClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormResetHandler(this._callback.formReset);
+  }
 
   #rollupButtonClickHandler = () => {
     this._callback.rollupButtonClick();
+  };
+
+  reset = (point) => {
+    this.updateElement(point);
   };
 }
 
