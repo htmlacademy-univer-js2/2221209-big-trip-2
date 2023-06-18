@@ -1,6 +1,8 @@
 import {POINT_TYPES, DateFormat} from '../const.js';
 import {changeDateFormat, getOfferId} from '../util.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
 
@@ -112,6 +114,8 @@ class NewEventEditorView extends AbstractStatefulView{
   #point = null;
   #destinations = [];
   #offers = [];
+  #datePickerStart = null;
+  #datePickerEnd = null;
 
   constructor(point, destinations, offersByType) {
     super();
@@ -120,6 +124,7 @@ class NewEventEditorView extends AbstractStatefulView{
     this.#offers = offersByType;
     this._setState(this.#point);
     this.#setInnerHandlers();
+    this.#setDatePicker();
   }
 
   get template() {
@@ -212,19 +217,68 @@ class NewEventEditorView extends AbstractStatefulView{
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
   };
 
+  #changeDateFromHandler = ([dateFrom]) => {
+    this._setState({
+      dateFrom
+    });
+  };
+
+  #changeDateToHandler = ([dateTo]) => {
+    this._setState({
+      dateTo
+    });
+  };
+
+  #setDatePicker = () => {
+    this.#datePickerStart = flatpickr(
+      this.element.querySelector('.event__input--time[name=event-start-time]'),
+      {
+        enableTime: true,
+        dateFormat: DateFormat.DATE_PICKER,
+        defaultDate: this._state.dateFrom,
+        maxDate: this._state.dateTo,
+        onChange: this.#changeDateFromHandler
+      }
+    );
+    this.#datePickerEnd = flatpickr(
+      this.element.querySelector('.event__input--time[name=event-end-time]'),
+      {
+        enableTime: true,
+        dateFormat: DateFormat.DATE_PICKER,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#changeDateToHandler
+      }
+    );
+  };
+
   _restoreHandlers() {
     this.#setInnerHandlers();
+    this.#setDatePicker();
     this.setRollupButtonClickHandler(this._callback.rollupButtonClick);
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datePickerStart) {
+      this.#datePickerStart.destroy();
+      this.#datePickerStart = null;
+    }
+    if (this.#datePickerEnd) {
+      this.#datePickerEnd.destroy();
+      this.#datePickerEnd = null;
+    }
   }
 
   #rollupButtonClickHandler = () => {
     this._callback.rollupButtonClick();
   };
 
-  reset = (point) => {
-    this.updateElement(point);
+  reset = () => {
+    this.updateElement(this.#point);
   };
 }
 

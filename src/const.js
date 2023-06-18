@@ -4,7 +4,8 @@ const DateFormat = {
   VIEW: 'hh:mm',
   EDIT: 'DD/MM/YY hh:mm',
   SERVICE: 'YYYY-MM-DDThh:mm',
-  SERVICE_DAY: 'YYYY-MM-DD'
+  SERVICE_DAY: 'YYYY-MM-DD',
+  DATE_PICKER: 'd/m/y H:i'
 };
 const PointState = {
   VIEW: 'view',
