@@ -39,7 +39,6 @@ class PointDrawer {
     });
 
     this.#pointEditComponent.setRollupButtonClickHandler(() => {
-      this.#pointEditComponent.reset(this.#point);
       this.#turnPointToView();
       document.removeEventListener('keyup', onEscKey);
     });
@@ -51,7 +50,6 @@ class PointDrawer {
     });
 
     this.#pointEditComponent.setFormResetHandler(() =>{
-      this.#pointEditComponent.reset(this.#point);
       this.#turnPointToView();
       document.removeEventListener('keyup', onEscKey);
     });
@@ -86,13 +84,13 @@ class PointDrawer {
   };
 
   #turnPointToView = () => {
+    this.#pointEditComponent.reset();
     replace(this.#pointComponent, this.#pointEditComponent);
     this.#pointState = PointState.VIEW;
   };
 
   resetPoint = () => {
     if (this.#pointState === PointState.EDIT){
-      this.#pointEditComponent.reset(this.#point);
       this.#turnPointToView();
     }
   };
