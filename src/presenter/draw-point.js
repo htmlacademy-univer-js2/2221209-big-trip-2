@@ -1,5 +1,6 @@
-import { PointState } from '../const';
+import { ActionType, PointState, UpdateType } from '../const';
 import { remove, render, replace } from '../framework/render';
+import { isPatchUpdate } from '../util';
 import { NewEventEditorView } from '../view/edit-event-view';
 import { NewEventView } from '../view/event-view';
 
@@ -26,39 +27,38 @@ class PointDrawer {
     this.#pointComponent = new NewEventView(this.#point, destinations, offers);
     this.#pointEditComponent = new NewEventEditorView(this.#point, destinations, offers);
 
-    const onEscKey = (evt) => {
-      if (evt.key === 'Escape'){
-        this.resetPoint();
-        document.removeEventListener('keyup', onEscKey);
-      }
-    };
-
     this.#pointComponent.setRollupButtonClickHandler(() => {
       this.#turnPointToEdit();
-      document.addEventListener('keyup', onEscKey);
     });
 
     this.#pointEditComponent.setRollupButtonClickHandler(() => {
       this.#turnPointToView();
-      document.removeEventListener('keyup', onEscKey);
     });
 
     this.#pointEditComponent.setFormSubmitHandler((updPoint) => {
-      this.#onPointUpdateHandler(updPoint);
+      const isPatch = isPatchUpdate(this.#point, updPoint);
+      this.#onPointUpdateHandler(
+        ActionType.UPDATE_POINT,
+        isPatch ? UpdateType.PATCH : UpdateType.SMALL,
+        updPoint
+      );
       this.#turnPointToView();
-      document.removeEventListener('keyup', onEscKey);
     });
 
     this.#pointEditComponent.setFormResetHandler(() =>{
-      this.#turnPointToView();
-      document.removeEventListener('keyup', onEscKey);
+      this.#onPointUpdateHandler(
+        ActionType.DELETE_POINT,
+        UpdateType.SMALL,
+        this.#point
+      );
     });
 
     this.#pointComponent.setFavButtonClickHandler(() => {
-      this.#onPointUpdateHandler({
-        ...this.#point,
-        isFavorite: !this.#point.isFavorite
-      });
+      this.#onPointUpdateHandler(
+        ActionType.UPDATE_POINT,
+        UpdateType.SMALL,
+        {...this.#point,
+          isFavorite: !this.#point.isFavorite});
     });
 
     if (pervPointComponent === null || pervPointEditComponent === null){
@@ -77,16 +77,24 @@ class PointDrawer {
     remove(pervPointEditComponent);
   }
 
+  #onEscKey = (evt) => {
+    if (evt.key === 'Escape'){
+      this.resetPoint();
+    }
+  };
+
   #turnPointToEdit = () => {
     this.#pointsResetHandler();
     replace(this.#pointEditComponent, this.#pointComponent);
     this.#pointState = PointState.EDIT;
+    document.addEventListener('keyup', this.#onEscKey);
   };
 
   #turnPointToView = () => {
     this.#pointEditComponent.reset();
     replace(this.#pointComponent, this.#pointEditComponent);
     this.#pointState = PointState.VIEW;
+    document.removeEventListener('keyup', this.#onEscKey);
   };
 
   resetPoint = () => {
