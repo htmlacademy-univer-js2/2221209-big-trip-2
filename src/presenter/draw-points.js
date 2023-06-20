@@ -67,7 +67,7 @@ class PointsDrawer {
       render(this.#emptyListComponent, this.#mainContainer);
       return;
     }
-    console.log(this.#emptyListComponent)
+    console.log(this.points)
     remove(this.#emptyListComponent);
 
     this.#renderSort();
@@ -150,6 +150,7 @@ class PointsDrawer {
     remove(this.#eventsSort)
     //remove(this.#eventsList);
     //console.log(this.#eventsSort)
+    this.#newPointDrawer.destroy()
     if (resetSort) {
       this.#sortType = SortType.DAY;
     }
@@ -162,8 +163,8 @@ class PointsDrawer {
   };
 
   #pointsResetHandler = () => {
-    this.#pointDrawers.forEach((drawer) => drawer.resetPoint());
     this.#newPointDrawer.destroy()
+    this.#pointDrawers.forEach((drawer) => drawer.resetPoint());
   };
 }
 
