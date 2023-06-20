@@ -16,5 +16,25 @@ const SortType = {
   TIME: 'time',
   PRICE: 'price',
 };
+const ActionType = {
+  UPDATE_POINT: 'update',
+  ADD_POINT: 'add',
+  DELETE_POINT: 'delete'
+};
+const UpdateType = {
+  PATCH: 'patch',
+  SMALL: 'small',
+  BIG: 'big'
+};
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past'
+};
+const EmptyListText = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.PAST]: 'There are no past events now'
+};
 
-export {POINT_TYPES, DateFormat, PointState, SortType};
+export {POINT_TYPES, DateFormat, PointState, SortType, ActionType, UpdateType, FilterType, EmptyListText};

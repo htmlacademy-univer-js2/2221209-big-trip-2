@@ -62,7 +62,7 @@ const createEventEditorTemplate = (point, destinations, offersByType) => {
           <input class="event__input  event__input--price" id="event-price-${pointId}" type="text" name="event-price" value="${point.basePrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">${point.id ? 'Save' : 'Save'}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${pointDestanation ? '' : 'disabled'}>${point.id ? 'Save' : 'Save'}</button>
         <button class="event__reset-btn" type="reset">${point.id ? 'Delete' : 'Cancel'}</button>
         ${point.id ? (
       `<button class="event__rollup-btn" type="button">
@@ -175,7 +175,7 @@ class NewEventEditorView extends AbstractStatefulView{
 
   #priceChangeHandler = (evt) => {
     const  inputedPrice = Number(evt.target.value);
-    const isValidPrice = !Number.isNaN(inputedPrice) && !evt.target.value.includes('e');
+    const isValidPrice = !Number.isNaN(inputedPrice) && !evt.target.value.includes('e') && inputedPrice !== 0;
     const newPrice = isValidPrice ? Math.round(inputedPrice) : this._state.basePrice;
     this._setState({
       basePrice: newPrice

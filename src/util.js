@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { POINT_TYPES } from './const.js';
+import { FilterType, POINT_TYPES } from './const.js';
 
 const changeDateFormat = (rawDate, dateFormat) => dayjs(rawDate).format(dateFormat);
 const getDuration = (startDate, endDate) => {
@@ -17,9 +17,9 @@ const getDuration = (startDate, endDate) => {
 };
 
 const getDefaultPoint = () => ({
-  'basePrice': 0,
-  'dateFrom': new Date().getTime(),
-  'dateTo': new Date().getTime(),
+  'basePrice': 1,
+  'dateFrom': new Date().toISOString(),
+  'dateTo': new Date().toISOString(),
   'destination': 0,
   'isFavorite': false,
   'offers': [],
@@ -43,4 +43,16 @@ const getOfferId = (markupId) => {
   return Number(assets[2]) || 0;
 };
 
-export {changeDateFormat, getDuration, getDefaultPoint, updateItems, sortByDay, sortByPrice, sortByTime, getOfferId};
+const filterPoints = (points, filterType) => {
+  switch (filterType) {
+    case FilterType.PAST:
+      return [...points.filter((point) => new Date(point.dateTo).getTime() < Date.now())];
+    case FilterType.FUTURE:
+      return [...points.filter((point) => new Date(point.dateTo).getTime() > Date.now())];
+  }
+  return [...points];
+};
+
+const isPatchUpdate = (point, update) => point.basePrice === update.basePrice && point.dateTo === update.dateTo && point.dateFrom === update.dateFrom;
+
+export {changeDateFormat, getDuration, getDefaultPoint, updateItems, sortByDay, sortByPrice, sortByTime, getOfferId, isPatchUpdate, filterPoints};
