@@ -17,7 +17,7 @@ const getDuration = (startDate, endDate) => {
 };
 
 const getDefaultPoint = () => ({
-  'basePrice': 0,
+  'basePrice': 1,
   'dateFrom': new Date().toISOString(),
   'dateTo': new Date().toISOString(),
   'destination': 0,

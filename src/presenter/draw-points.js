@@ -3,7 +3,7 @@ import {NewElemListView} from '../view/events-list-view.js';
 import {NewEmptyListView} from '../view/empty-list-view.js';
 import { RenderPosition, remove, render} from '../framework/render.js';
 import { PointDrawer } from './draw-point.js';
-import { filterPoints, getDefaultPoint, sortByDay, sortByPrice, sortByTime, updateItems } from '../util.js';
+import { filterPoints, getDefaultPoint, sortByDay, sortByPrice, sortByTime} from '../util.js';
 import { ActionType, FilterType, SortType, UpdateType } from '../const.js';
 import { NewPointDrawer } from './draw-new-point.js';
 
@@ -26,10 +26,10 @@ class PointsDrawer {
 
     //proverit i peremestit newSortView v renderSort
 
-    this.#pointModel.addObserver(this.#modelActionHandler)
-    this.#filterModel.addObserver(this.#modelActionHandler)
+    this.#pointModel.addObserver(this.#modelActionHandler);
+    this.#filterModel.addObserver(this.#modelActionHandler);
 
-    this.#newPointDrawer = new NewPointDrawer(this.#eventsList.element, this.#viewActionHandler, onNewEventClose)
+    this.#newPointDrawer = new NewPointDrawer(this.#eventsList.element, this.#viewActionHandler, onNewEventClose);
   }
 
   get points() {
@@ -60,14 +60,14 @@ class PointsDrawer {
 
   #renderPoints = () => {
     if (this.points.length === 0) {
-      remove(this.#eventsSort)
+      remove(this.#eventsSort);
       const isEmpty = this.#pointModel.points.length === 0;
       remove(this.#emptyListComponent);
-      this.#emptyListComponent = new NewEmptyListView(this.#filterModel.filter, isEmpty)
+      this.#emptyListComponent = new NewEmptyListView(this.#filterModel.filter, isEmpty);
       render(this.#emptyListComponent, this.#mainContainer);
       return;
     }
-    console.log(this.points)
+
     remove(this.#emptyListComponent);
 
     this.#renderSort();
@@ -81,7 +81,7 @@ class PointsDrawer {
   createEvent() {
     this.#sortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.BIG, FilterType.EVERYTHING);
-    this.#newPointDrawer.init(getDefaultPoint(), this.destinations, this.offersByType)
+    this.#newPointDrawer.init(getDefaultPoint(), this.destinations, this.offersByType);
     // if (this.points.length === 0) {
     //   remove(this.#emptyListComponent);
     // }
@@ -89,7 +89,7 @@ class PointsDrawer {
   }
 
   #renderSort = () => {
-    remove(this.#eventsSort)
+    remove(this.#eventsSort);
     this.#eventsSort = new NewSortView(this.#sortType);
     render(this.#eventsSort, this.#mainContainer, RenderPosition.AFTERBEGIN);
     this.#eventsSort.setSortTypeChangeHandler(this.#changeTypeSortHandler);
@@ -115,7 +115,7 @@ class PointsDrawer {
       case ActionType.DELETE_POINT:
         this.#pointModel.deletePoint(updateType, update);
     }
-  }
+  };
 
   #modelActionHandler = (updateType, data) => {
     switch (updateType) {
@@ -131,7 +131,7 @@ class PointsDrawer {
         this.#renderPoints();
         break;
     }
-  }
+  };
 
   #renderSortedPoints = () => {
     this.#clearEventsList();
@@ -147,14 +147,14 @@ class PointsDrawer {
   #clearPoints = (resetSort) => {
     this.#pointDrawers.forEach((drawer) => drawer.removeDrawer());
     this.#pointDrawers.clear();
-    remove(this.#eventsSort)
+    remove(this.#eventsSort);
     //remove(this.#eventsList);
     //console.log(this.#eventsSort)
-    this.#newPointDrawer.destroy()
+    this.#newPointDrawer.destroy();
     if (resetSort) {
       this.#sortType = SortType.DAY;
     }
-  }
+  };
 
   #renderPoint = (point, destinations, offers) => {
     const newPoint = new PointDrawer(this.#eventsList.element, this.#viewActionHandler, this.#pointsResetHandler);
@@ -163,7 +163,7 @@ class PointsDrawer {
   };
 
   #pointsResetHandler = () => {
-    this.#newPointDrawer.destroy()
+    this.#newPointDrawer.destroy();
     this.#pointDrawers.forEach((drawer) => drawer.resetPoint());
   };
 }
