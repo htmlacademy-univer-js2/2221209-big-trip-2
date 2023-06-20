@@ -22,7 +22,7 @@ const filtersDrawer = new FiltersDrawer(controlsMenu, pointModel, filterModel);
 filtersDrawer.init();
 
 const newEventButton = new newEventButtonView();
-newEventButton.setBtnClickHandler(newEventBtnClickHandler)
+newEventButton.setBtnClickHandler(newEventBtnClickHandler);
 
 function newEventFormCloseHandler() {
   newEventButton.enable();

@@ -23,21 +23,21 @@ class NewPointDrawer {
         UpdateType.SMALL,
         updPoint
       );
-      this.destroy()
+      this.destroy();
     });
 
     this.#pointNewComponent.setFormResetHandler(() =>{
-      this.destroy()
+      this.destroy();
     });
 
-    render(this.#pointNewComponent, this.#eventsListContainer, RenderPosition.AFTERBEGIN)
+    render(this.#pointNewComponent, this.#eventsListContainer, RenderPosition.AFTERBEGIN);
 
-    document.addEventListener('keyup', this.#onEscKey)
+    document.addEventListener('keyup', this.#onEscKey);
   }
 
   #onEscKey = (evt) => {
     if (evt.key === 'Escape'){
-      this.destroy()
+      this.destroy();
     }
   };
 
@@ -45,12 +45,12 @@ class NewPointDrawer {
     if (this.#pointNewComponent === null) {
       return;
     }
-    this.#pointDestroyHandler()
+    this.#pointDestroyHandler();
 
-    remove(this.#pointNewComponent)
-    this.#pointNewComponent = null
-    document.removeEventListener('keyup', this.#onEscKey)
-  }
+    remove(this.#pointNewComponent);
+    this.#pointNewComponent = null;
+    document.removeEventListener('keyup', this.#onEscKey);
+  };
 }
 
 export {NewPointDrawer};
