@@ -242,6 +242,7 @@ class NewEventEditorView extends AbstractStatefulView{
         onChange: this.#changeDateFromHandler
       }
     );
+
     this.#datePickerEnd = flatpickr(
       this.element.querySelector('.event__input--time[name=event-end-time]'),
       {
@@ -269,6 +270,7 @@ class NewEventEditorView extends AbstractStatefulView{
       this.#datePickerStart.destroy();
       this.#datePickerStart = null;
     }
+
     if (this.#datePickerEnd) {
       this.#datePickerEnd.destroy();
       this.#datePickerEnd = null;
