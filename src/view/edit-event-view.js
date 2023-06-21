@@ -214,6 +214,7 @@ class NewEventEditorView extends AbstractStatefulView{
     if (availableOffers) {
       availableOffers.addEventListener('change', this.#offersChangeHandler);
     }
+
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
