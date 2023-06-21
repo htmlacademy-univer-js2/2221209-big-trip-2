@@ -6,7 +6,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 const upFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
 
-const createEventEditorTemplate = (point, destinations, offersByType) => {
+const createEventEditorTemplate = (point, destinations, offersByType, isNew) => {
   const pointDestanation = destinations.find((dest) => dest.id === point.destination);
   const pointTypeOffers = offersByType.find((off) => off.type === point.type).offers;
   const pointId = point.id || 0;
@@ -62,9 +62,9 @@ const createEventEditorTemplate = (point, destinations, offersByType) => {
           <input class="event__input  event__input--price" id="event-price-${pointId}" type="text" name="event-price" value="${point.basePrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${pointDestanation ? '' : 'disabled'}>${point.id ? 'Save' : 'Save'}</button>
-        <button class="event__reset-btn" type="reset">${point.id ? 'Delete' : 'Cancel'}</button>
-        ${point.id ? (
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${pointDestanation ? '' : 'disabled'}>Save</button>
+        <button class="event__reset-btn" type="reset">${!isNew ? 'Delete' : 'Cancel'}</button>
+        ${!isNew ? (
       `<button class="event__rollup-btn" type="button">
              <span class="visually-hidden">Open event</span>
            </button>`
@@ -116,19 +116,21 @@ class NewEventEditorView extends AbstractStatefulView{
   #offers = [];
   #datePickerStart = null;
   #datePickerEnd = null;
+  #isNew = false;
 
-  constructor(point, destinations, offersByType) {
+  constructor(point, destinations, offersByType, isNew) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offersByType;
-    this._setState(this.#point);
+    this.#isNew = isNew;
+    this._setState(NewEventEditorView.parseToState(this.#point));
     this.#setInnerHandlers();
     this.#setDatePicker();
   }
 
   get template() {
-    return createEventEditorTemplate(this._state, this.#destinations, this.#offers);
+    return createEventEditorTemplate(this._state, this.#destinations, this.#offers, this.#isNew);
   }
 
   setRollupButtonClickHandler = (callback) => {
@@ -156,7 +158,7 @@ class NewEventEditorView extends AbstractStatefulView{
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this._state);
+    this._callback.formSubmit(NewEventEditorView.parseToPoint(this._state));
   };
 
   #typeChangeHandler = (evt) => {
@@ -278,8 +280,23 @@ class NewEventEditorView extends AbstractStatefulView{
   };
 
   reset = () => {
-    this.updateElement(this.#point);
+    this.updateElement(NewEventEditorView.parseToState(this.#point));
   };
+
+  static parseToState(point) {
+    return {
+      ...point,
+      isSaving: false,
+      isDeleting: false
+    };
+  }
+
+  static parseToPoint(state) {
+    const point = {...state};
+    delete point.isSaving;
+    delete point.isDeleting;
+    return point;
+  }
 }
 
 export {NewEventEditorView};

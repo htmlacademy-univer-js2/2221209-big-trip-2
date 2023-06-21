@@ -25,7 +25,7 @@ class PointDrawer {
 
     this.#point = point;
     this.#pointComponent = new NewEventView(this.#point, destinations, offers);
-    this.#pointEditComponent = new NewEventEditorView(this.#point, destinations, offers);
+    this.#pointEditComponent = new NewEventEditorView(this.#point, destinations, offers, false);
 
     this.#pointComponent.setRollupButtonClickHandler(() => {
       this.#turnPointToEdit();
@@ -102,6 +102,40 @@ class PointDrawer {
       this.#turnPointToView();
     }
   };
+
+  setSaving() {
+    if (this.#pointState === PointState.EDIT) {
+      this.#pointEditComponent.updateElement({
+        isSaving: true,
+        isDisabled: true
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#pointState === PointState.VIEW) {
+      this.#pointComponent.shake();
+    }
+    else if (this.#pointState === PointState.EDIT) {
+      const resetPointState = () => {
+        this.#pointEditComponent.updateElement({
+          isSaving: false,
+          isDisabled: false,
+          isDeleting: false
+        });
+      };
+      this.#pointEditComponent.shake(resetPointState);
+    }
+  }
+
+  setDeleting() {
+    if (this.#pointState === PointState.EDIT) {
+      this.#pointEditComponent.updateElement({
+        isDeleting: true,
+        isDisabled: true
+      });
+    }
+  }
 
   removeDrawer = () => {
     remove(this.#pointComponent);

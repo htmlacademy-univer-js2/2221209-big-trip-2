@@ -6,6 +6,7 @@ import { PointDrawer } from './draw-point.js';
 import { filterPoints, getDefaultPoint, sortByDay, sortByPrice, sortByTime} from '../util.js';
 import { ActionType, FilterType, SortType, UpdateType } from '../const.js';
 import { NewPointDrawer } from './draw-new-point.js';
+import { NewLoadView } from '../view/loading-view.js';
 
 class PointsDrawer {
   #pointModel = null;
@@ -17,12 +18,17 @@ class PointsDrawer {
   #eventsSort = null;
   #sortType = SortType.DAY;
   #newPointDrawer = null;
+  #loadingComponent = null;
+  #isLoading = true;
+  #filtersReset = null;
 
-  constructor(mainCon, pointModel, filterModel, onNewEventClose) {
+  constructor(mainCon, pointModel, filterModel, onNewEventClose, filtersReset) {
     this.#pointModel= pointModel;
     this.#filterModel = filterModel;
     this.#mainContainer = mainCon;
     this.#eventsList = new NewElemListView();
+    this.#loadingComponent = new NewLoadView();
+    this.#filtersReset = filtersReset;
 
     //proverit i peremestit newSortView v renderSort
 
@@ -55,7 +61,12 @@ class PointsDrawer {
   }
 
   init(){
-    this.#renderPoints();
+    if (this.#isLoading) {
+      render(this.#loadingComponent, this.#mainContainer);
+    }
+    else{
+      this.#renderPoints();
+    }
   }
 
   #renderPoints = () => {
@@ -104,16 +115,31 @@ class PointsDrawer {
     this.#renderSortedPoints();
   };
 
-  #viewActionHandler = (actionType, updateType, update) => {
+  #viewActionHandler = async (actionType, updateType, update) => {
     switch (actionType) {
       case ActionType.UPDATE_POINT:
-        this.#pointModel.updatePoint(updateType, update);
+        this.#pointDrawers.get(update.id).setSaving();
+        try {
+          await this.#pointModel.updatePoint(updateType, update);
+        } catch {
+          this.#pointDrawers.get(update.id).setAborting();
+        }
         break;
       case ActionType.ADD_POINT:
-        this.#pointModel.addPoint(updateType, update);
+        this.#newPointDrawer.setSaving();
+        try {
+          await this.#pointModel.addPoint(updateType, update);
+        } catch {
+          this.#newPointDrawer.setAborting();
+        }
         break;
       case ActionType.DELETE_POINT:
-        this.#pointModel.deletePoint(updateType, update);
+        this.#pointDrawers.get(update.id).setDeleting();
+        try {
+          await this.#pointModel.deletePoint(updateType, update);
+        } catch {
+          this.#pointDrawers.get(update.id).setAborting();
+        }
     }
   };
 
@@ -129,6 +155,12 @@ class PointsDrawer {
       case UpdateType.BIG:
         this.#clearPoints(true);
         this.#renderPoints();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderPoints();
+        this.#filtersReset();
         break;
     }
   };
