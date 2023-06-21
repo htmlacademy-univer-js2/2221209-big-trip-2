@@ -9,9 +9,6 @@ class PointModel extends Observable{
 
   constructor(eventsApiService) {
     super();
-    // this.#points = points;
-    // this.#destinations = destinations;
-    // this.#offersByType = offersByType;
     this.#eventsApiService = eventsApiService;
   }
 
@@ -86,7 +83,6 @@ class PointModel extends Observable{
       throw new Error('Can\'t delete point');
     }
   }
-
 }
 
 export {PointModel};

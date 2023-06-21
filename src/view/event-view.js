@@ -87,7 +87,6 @@ class NewEventView extends AbstractView{
   #favButtonClickHandler = () => {
     this._callback.favButtonClick();
   };
-
 }
 
 export { NewEventView };

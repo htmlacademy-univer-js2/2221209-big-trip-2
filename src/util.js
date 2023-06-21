@@ -3,6 +3,7 @@ import { FilterType, POINT_TYPES } from './const.js';
 import { nanoid } from 'nanoid';
 
 const changeDateFormat = (rawDate, dateFormat) => dayjs(rawDate).format(dateFormat);
+
 const getDuration = (startDate, endDate) => {
   const days = dayjs(endDate).diff(dayjs(startDate), 'd');
   const hours = dayjs(endDate).subtract(days, 'd').diff(dayjs(startDate), 'h');

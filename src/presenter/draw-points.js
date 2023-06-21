@@ -30,8 +30,6 @@ class PointsDrawer {
     this.#loadingComponent = new NewLoadView();
     this.#filtersReset = filtersReset;
 
-    //proverit i peremestit newSortView v renderSort
-
     this.#pointModel.addObserver(this.#modelActionHandler);
     this.#filterModel.addObserver(this.#modelActionHandler);
 
@@ -93,9 +91,6 @@ class PointsDrawer {
     this.#sortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.BIG, FilterType.EVERYTHING);
     this.#newPointDrawer.init(getDefaultPoint(), this.destinations, this.offersByType);
-    // if (this.points.length === 0) {
-    //   remove(this.#emptyListComponent);
-    // }
 
   }
 
@@ -173,15 +168,12 @@ class PointsDrawer {
   #clearEventsList = () => {
     this.#pointDrawers.forEach((drawer) =>drawer.removeDrawer());
     this.#pointDrawers.clear();
-    //remove(this.#eventsList);
   };
 
   #clearPoints = (resetSort) => {
     this.#pointDrawers.forEach((drawer) => drawer.removeDrawer());
     this.#pointDrawers.clear();
     remove(this.#eventsSort);
-    //remove(this.#eventsList);
-    //console.log(this.#eventsSort)
     this.#newPointDrawer.destroy();
     if (resetSort) {
       this.#sortType = SortType.DAY;
