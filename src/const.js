@@ -24,7 +24,8 @@ const ActionType = {
 const UpdateType = {
   PATCH: 'patch',
   SMALL: 'small',
-  BIG: 'big'
+  BIG: 'big',
+  INIT: 'init'
 };
 const FilterType = {
   EVERYTHING: 'everything',
@@ -36,5 +37,15 @@ const EmptyListText = {
   [FilterType.FUTURE]: 'There are no future events now',
   [FilterType.PAST]: 'There are no past events now'
 };
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
+};
+const Server = {
+  SERVER: 'https://18.ecmascript.pages.academy/big-trip',
+  AUTHORIZATION: 'Basic sfdgsdfgsf876bp'
+};
 
-export {POINT_TYPES, DateFormat, PointState, SortType, ActionType, UpdateType, FilterType, EmptyListText};
+export {POINT_TYPES, DateFormat, PointState, SortType, ActionType, UpdateType, FilterType, EmptyListText, Method, Server};

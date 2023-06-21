@@ -15,7 +15,7 @@ class NewPointDrawer {
   }
 
   init(point, destinations, offers){
-    this.#pointNewComponent = new NewEventEditorView(point, destinations, offers);
+    this.#pointNewComponent = new NewEventEditorView(point, destinations, offers, true);
 
     this.#pointNewComponent.setFormSubmitHandler((updPoint) => {
       this.#onPointUpdateHandler(
@@ -51,6 +51,24 @@ class NewPointDrawer {
     this.#pointNewComponent = null;
     document.removeEventListener('keyup', this.#onEscKey);
   };
+
+  setSaving() {
+    this.#pointNewComponent.updateElement({
+      isSaving: true,
+      isDisabled: true
+    });
+  }
+
+  setAborting() {
+    const resetPointState = () => {
+      this.#pointNewComponent.updateElement({
+        isSaving: false,
+        isDisabled: false,
+        isDeleting: false
+      });
+    };
+    this.#pointNewComponent.shake(resetPointState);
+  }
 }
 
 export {NewPointDrawer};

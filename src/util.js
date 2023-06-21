@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { FilterType, POINT_TYPES } from './const.js';
+import { nanoid } from 'nanoid';
 
 const changeDateFormat = (rawDate, dateFormat) => dayjs(rawDate).format(dateFormat);
 const getDuration = (startDate, endDate) => {
@@ -23,7 +24,8 @@ const getDefaultPoint = () => ({
   'destination': 0,
   'isFavorite': false,
   'offers': [],
-  'type': POINT_TYPES[0]
+  'type': POINT_TYPES[0],
+  'id': nanoid()
 });
 
 const updateItems = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
@@ -46,7 +48,7 @@ const getOfferId = (markupId) => {
 const filterPoints = (points, filterType) => {
   switch (filterType) {
     case FilterType.PAST:
-      return [...points.filter((point) => new Date(point.dateTo).getTime() < Date.now())];
+      return [...points.filter((point) => new Date(point.dateFrom).getTime() < Date.now())];
     case FilterType.FUTURE:
       return [...points.filter((point) => new Date(point.dateTo).getTime() > Date.now())];
   }

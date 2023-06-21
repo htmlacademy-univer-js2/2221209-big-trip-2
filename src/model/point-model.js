@@ -1,18 +1,32 @@
-import {points} from '../mocks/points.js';
-import {destinations} from '../mocks/destinations.js';
-import {offersByType} from '../mocks/offers.js';
 import Observable from '../framework/observable.js';
+import { UpdateType } from '../const.js';
 
 class PointModel extends Observable{
   #points = [];
   #destinations = [];
   #offersByType = [];
+  #eventsApiService = null;
 
-  constructor() {
+  constructor(eventsApiService) {
     super();
-    this.#points = points;
-    this.#destinations = destinations;
-    this.#offersByType = offersByType;
+    // this.#points = points;
+    // this.#destinations = destinations;
+    // this.#offersByType = offersByType;
+    this.#eventsApiService = eventsApiService;
+  }
+
+  async init() {
+    try {
+      this.#points = await this.#eventsApiService.points;
+      this.#destinations = await this.#eventsApiService.destinations;
+      this.#offersByType = await this.#eventsApiService.offersByType;
+    } catch {
+      this.#points = [];
+      this.#destinations = [];
+      this.#offersByType = [];
+    }
+
+    this._notify(UpdateType.INIT);
   }
 
   get points() {
@@ -27,37 +41,51 @@ class PointModel extends Observable{
     return this.#offersByType;
   }
 
-  updatePoint = (updateType, update) => {
+  async updatePoint(updateType, update) {
     const index = this.#points.findIndex((point) => point.id === update.id);
 
-    this.#points = [
-      ...this.points.slice(0, index),
-      update,
-      ...this.#points.slice(index + 1)
-    ];
+    try{
+      const updPoint = await this.#eventsApiService.updatePoint(update);
+      this.#points = [
+        ...this.points.slice(0, index),
+        updPoint,
+        ...this.#points.slice(index + 1)
+      ];
+      this._notify(updateType, update);
+    } catch {
+      throw new Error('Can\'t update point');
+    }
+  }
 
-    this._notify(updateType, update);
-  };
+  async addPoint(updateType, update) {
+    try{
+      const newPoint = await this.#eventsApiService.addPoint(update);
+      this.#points = [
+        newPoint,
+        ...this.#points
+      ];
 
-  addPoint = (updateType, update) => {
-    this.#points = [
-      update,
-      ...this.#points
-    ];
+      this._notify(updateType, update);
+    } catch {
+      throw new Error('Can\'t add point');
+    }
+  }
 
-    this._notify(updateType, update);
-  };
+  async deletePoint(updateType, update) {
+    try{
+      const index = this.#points.findIndex((point) => point.id === update.id);
+      await this.#eventsApiService.deletePoint(update);
 
-  deletePoint = (updateType, update) => {
-    const index = this.#points.findIndex((point) => point.id === update.id);
+      this.#points = [
+        ...this.points.slice(0, index),
+        ...this.#points.slice(index + 1)
+      ];
 
-    this.#points = [
-      ...this.points.slice(0, index),
-      ...this.#points.slice(index + 1)
-    ];
-
-    this._notify(updateType, update);
-  };
+      this._notify(updateType, update);
+    } catch {
+      throw new Error('Can\'t delete point');
+    }
+  }
 
 }
 
